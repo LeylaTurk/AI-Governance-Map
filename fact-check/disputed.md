@@ -110,3 +110,18 @@ should move from "Draft legislation pending" to "Comprehensive binding
 law" or "Sectoral or partial binding law" (given the ₦10M/2%-revenue fine
 structure described in the bill).
 
+
+Batch G (Eastern Europe/CIS): no entries — both rows (Russia, Kazakhstan)
+verified with 2+ independent sources.
+
+---
+
+## Summary
+
+All 52 rows fact-checked across 7 batches. Final verification_status
+breakdown: 49 Verified (2+ independent sources), 1 Likely (1 source,
+credible) — Argentina, 1 Disputed (sources conflict) — Bangladesh, 1
+Unverifiable — Nigeria. Two rows requiring a decision before publishing:
+Bangladesh (internal contradiction in the government's own draft policy
+about its AI Act's target date) and Nigeria (genuinely unresolved
+presidential-assent status, despite two independent research passes).
