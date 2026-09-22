@@ -63,3 +63,8 @@ visualization claim around either specific year for Bangladesh's AI Act
 without flagging this uncertainty, or better, wait for the final adopted
 policy.
 
+Batch E (Middle East): no entries — all 4 rows verified with 2+ independent
+sources. One correction made directly in the CSV: Saudi Arabia's new
+copyright law (with its AI-training exception) enters into force 12 Aug
+2026, not 1 Aug 2026 as Agent 1's row said.
+
