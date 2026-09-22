@@ -354,8 +354,8 @@
   </footer>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson-client/3.1.0/topojson-client.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/dist/topojson-client.min.js"></script>
 <script src="countries-topo.js"></script>
 <script src="gov-data.js"></script>
 <script>
@@ -522,6 +522,14 @@
   }
 
   // ---------- Map ----------
+  if (typeof d3 === "undefined" || typeof topojson === "undefined") {
+    document.getElementById("map").outerHTML =
+      '<div style="padding:32px;text-align:center;color:var(--ink-2);font-size:0.9rem;">' +
+      "The map's drawing library didn't load (likely a network hiccup fetching it from jsdelivr.net). " +
+      "Try reloading the page — the legend, country list, and international-bodies panel below still work either way.</div>";
+    throw new Error("d3 or topojson-client failed to load from CDN");
+  }
+
   var svg = d3.select("#map");
   var countriesG = d3.select("#countries");
   var markersG = d3.select("#markers");
