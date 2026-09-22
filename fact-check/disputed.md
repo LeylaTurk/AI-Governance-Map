@@ -68,3 +68,45 @@ sources. One correction made directly in the CSV: Saudi Arabia's new
 copyright law (with its AI-training exception) enters into force 12 Aug
 2026, not 1 Aug 2026 as Agent 1's row said.
 
+## Nigeria — has the National Digital Economy and E-Governance Bill been signed into law?
+
+**Row status:** Unverifiable
+
+**What's in dispute:** Whether President Bola Tinubu has signed Nigeria's
+National Digital Economy and e-Governance Bill 2025 — the bill that would
+give NITDA real AI-regulatory powers, including fines. Agent 1 logged this
+exact gap in `research/needs-followup.md` and could not resolve it. I made
+a genuinely fresh, independent attempt (different search terms, tried to
+fetch NITDA-adjacent primary sources, searched specifically for Aug-Sept
+2026 Nigerian coverage) and STILL could not confirm the answer either way.
+
+**What I found on each side:**
+- Evidence it might still be pending: the most recent substantive coverage
+  I found (13 Aug 2026, TechCabal, about a related but distinct law — the
+  NIMC Act 2026 on digital identity) still describes the digital economy
+  bill as separate and does not mention it as signed. Earlier reporting
+  (Nov 2025-early 2026) consistently described it as passed by the
+  National Assembly and awaiting transmission/assent, with lawmakers
+  targeting "end of March 2026" or "Q2 2026" for enactment — targets that
+  would have already passed by the Sept 2026 research date, one way or the
+  other.
+- Evidence it might already be signed: none found. No gazette notice, no
+  NITDA/presidency press release, no Nigerian tech-press "bill signed"
+  headline turned up in any search.
+
+**My lean:** More likely NOT yet signed as of Sept 2026. My reasoning: (1)
+Nigerian tech and general press was actively covering other Tinubu bill
+signings in the same window (e.g. the NIMC Act 2026, signed and reported
+promptly) — if the digital economy bill had been signed, similar coverage
+would likely exist and be easy to find; (2) the repeated slipping of
+informal targets (Nov 2025 to March 2026 to Q2 2026) suggests a bill still
+working through final legislative/procedural steps rather than one that
+quietly became law without notice. But this is genuinely a lean, not a
+confirmed fact — **the project owner should check Nigeria's official
+gazette (gazettes.ng or the National Assembly's own site) or NITDA's press
+page directly before publishing anything that states Nigeria's governance
+category one way or the other.** If it HAS been signed, Nigeria's category
+should move from "Draft legislation pending" to "Comprehensive binding
+law" or "Sectoral or partial binding law" (given the ₦10M/2%-revenue fine
+structure described in the bill).
+
