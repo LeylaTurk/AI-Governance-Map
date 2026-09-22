@@ -16,3 +16,9 @@ bill was introduced) couldn't be pinned down precisely, but this doesn't
 rise to a genuine dispute or gap worth a full entry here — see
 verification_notes in the CSV for that row.
 
+Batch C (non-EU Europe): no entries — all 7 rows verified with 2+
+independent sources. Notably, Norway's priority conflict (in force vs.
+delayed) is now RESOLVED: confirmed delayed, not in force, bill unlikely
+before the Storting until spring 2027 and entry into force unlikely before
+mid-2027 — see the CSV row's verification_notes for the source.
+
