@@ -1,0 +1,666 @@
+<title>AI Governance Atlas</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --bg: #f6f5f2;
+    --surface: #ffffff;
+    --surface-raised: #ffffff;
+    --ink: #1a1d23;
+    --ink-2: #4b5160;
+    --ink-3: #666d7a;
+    --border: #dfe0dc;
+    --border-strong: #c7c9c3;
+    --accent: #2f4f7a;
+    --accent-ink: #ffffff;
+    --focus: #2f4f7a;
+    --not-assessed: #d9dad4;
+    --not-assessed-ink: #474a43;
+    --muted-known: #cdd0c8;
+    --map-stroke: #f6f5f2;
+    --hazard-a: #b3540e;
+    --hazard-b: #1a1a1a;
+    --card-shadow: 0 10px 30px -14px rgba(20, 22, 20, 0.35);
+    --radius: 10px;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #14161a;
+      --surface: #1c1f25;
+      --surface-raised: #22262e;
+      --ink: #eceef1;
+      --ink-2: #b7bcc6;
+      --ink-3: #868d99;
+      --border: #2c3138;
+      --border-strong: #3a4048;
+      --accent: #8fb3e0;
+      --accent-ink: #0d1420;
+      --focus: #8fb3e0;
+      --not-assessed: #33373e;
+      --not-assessed-ink: #9aa0aa;
+      --muted-known: #2a2e2f;
+      --map-stroke: #14161a;
+      --hazard-a: #d97a32;
+      --hazard-b: #0c0c0c;
+      --card-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #14161a;
+    --surface: #1c1f25;
+    --surface-raised: #22262e;
+    --ink: #eceef1;
+    --ink-2: #b7bcc6;
+    --ink-3: #868d99;
+    --border: #2c3138;
+    --border-strong: #3a4048;
+    --accent: #8fb3e0;
+    --accent-ink: #0d1420;
+    --focus: #8fb3e0;
+    --not-assessed: #33373e;
+    --not-assessed-ink: #9aa0aa;
+    --muted-known: #2a2e2f;
+    --map-stroke: #14161a;
+    --hazard-a: #d97a32;
+    --hazard-b: #0c0c0c;
+    --card-shadow: 0 10px 30px -12px rgba(0, 0, 0, 0.6);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    padding-inline: 16px;
+  }
+  .mono { font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace; }
+  .visually-hidden {
+    position: absolute; width: 1px; height: 1px; overflow: hidden;
+    clip: rect(0 0 0 0); white-space: nowrap; border: 0; padding: 0; margin: -1px;
+  }
+  a { color: var(--accent); }
+  button, select {
+    font-family: inherit; font-size: 0.9rem; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--border-strong);
+    border-radius: 8px; padding: 9px 14px; cursor: pointer;
+  }
+  select {
+    max-width: 100%; min-width: 0;
+    text-overflow: ellipsis; white-space: nowrap; overflow: hidden;
+  }
+  button:hover, select:hover { border-color: var(--accent); }
+  button:focus-visible, select:focus-visible, [tabindex]:focus-visible, a:focus-visible {
+    outline: 2.5px solid var(--focus); outline-offset: 2px;
+  }
+  .page { max-width: 1180px; margin: 0 auto; padding-block: 20px 40px; display: flex; flex-direction: column; gap: 22px; }
+
+  .masthead h1 {
+    font-size: clamp(1.5rem, 1.1rem + 1.4vw, 2.1rem);
+    font-weight: 800; letter-spacing: -0.01em; margin: 0 0 6px;
+    text-wrap: balance;
+  }
+  .masthead .byline { color: var(--ink-3); font-size: 0.92rem; margin: 0; }
+
+  .topbar {
+    display: flex; align-items: flex-start; justify-content: space-between; gap: 20px;
+    flex-wrap: wrap; background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 18px;
+  }
+  .thesis-text {
+    margin: 0; font-size: 1.05rem; line-height: 1.5; max-width: 62ch; color: var(--ink);
+  }
+  .thesis-text strong.tone-green { color: #1a9850; }
+  .thesis-text strong.tone-red { color: #d73027; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .thesis-text strong.tone-green { color: #6fd08a; }
+    :root:not([data-theme="light"]) .thesis-text strong.tone-red { color: #f28b7f; }
+  }
+  :root[data-theme="dark"] .thesis-text strong.tone-green { color: #6fd08a; }
+  :root[data-theme="dark"] .thesis-text strong.tone-red { color: #f28b7f; }
+  .controls { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; min-width: 0; max-width: 100%; }
+  #jumpSelect { flex: 1 1 220px; min-width: 0; max-width: 100%; }
+  #modeToggle { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; }
+  #modeToggle[aria-pressed="true"] {
+    background: var(--hazard-b); border-color: var(--hazard-a); color: #fff;
+  }
+  #modeToggle .swatch {
+    width: 12px; height: 12px; border-radius: 3px; background: repeating-linear-gradient(45deg, var(--hazard-a) 0 3px, var(--hazard-b) 3px 6px);
+    flex: none;
+  }
+
+  .gap-caption {
+    background: color-mix(in srgb, var(--hazard-a) 14%, var(--surface));
+    border: 1px solid var(--hazard-a);
+    color: var(--ink); border-radius: 8px; padding: 10px 14px; font-size: 0.92rem;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .mapWrap { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; align-items: start; }
+  @media (max-width: 900px) { .mapWrap { grid-template-columns: 1fr; } }
+
+  .mapPane {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 10px; position: relative; overflow: hidden;
+  }
+  #map { width: 100%; height: auto; display: block; touch-action: none; }
+  .country {
+    stroke: var(--map-stroke); stroke-width: 0.6; cursor: pointer;
+    transition: filter 0.12s ease;
+  }
+  .country:hover, .country:focus-visible, .country.is-active { filter: brightness(1.12); }
+  .country:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+  .tiny-marker { cursor: pointer; stroke: var(--map-stroke); stroke-width: 0.8; }
+  .tiny-marker:hover, .tiny-marker:focus-visible { filter: brightness(1.2); }
+  .caveat-badge { pointer-events: none; }
+  .caveat-badge circle { fill: var(--surface); stroke: var(--hazard-a); stroke-width: 1.1; }
+  .caveat-badge text { fill: var(--hazard-a); font-weight: 800; font-size: 6px; font-family: "Public Sans", sans-serif; }
+
+  .zoomHint {
+    position: absolute; right: 14px; bottom: 10px; font-size: 0.72rem; color: var(--ink-3);
+    background: color-mix(in srgb, var(--surface) 80%, transparent); padding: 3px 8px; border-radius: 6px;
+    pointer-events: none;
+  }
+  .zoomBtns { position: absolute; left: 14px; bottom: 10px; display: flex; gap: 6px; }
+  .zoomBtns button { padding: 4px 10px; font-weight: 700; line-height: 1; }
+
+  .cardPanel {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+    padding: 16px; min-height: 220px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .cardEmpty { color: var(--ink-3); font-size: 0.92rem; margin: auto 0; }
+  .cardContent h3 { margin: 0 0 2px; font-size: 1.15rem; font-weight: 800; }
+  .card-sub { font-size: 0.78rem; color: var(--ink-3); margin: 0 0 10px; }
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.88rem;
+    padding: 5px 10px 5px 8px; border-radius: 999px; margin-bottom: 10px;
+  }
+  .status-pill svg { width: 14px; height: 14px; flex: none; }
+  .card-field { font-size: 0.86rem; margin-bottom: 10px; }
+  .card-field .k {
+    display: block; text-transform: uppercase; letter-spacing: 0.04em; font-size: 0.68rem;
+    color: var(--ink-3); font-weight: 700; margin-bottom: 3px;
+  }
+  .card-field .v { color: var(--ink); line-height: 1.45; }
+  .card-summary { font-size: 0.95rem; line-height: 1.5; color: var(--ink); margin-bottom: 12px; }
+  details.more { margin-bottom: 10px; }
+  details.more summary { cursor: pointer; font-size: 0.8rem; color: var(--accent); font-weight: 600; }
+  details.more p { font-size: 0.82rem; color: var(--ink-2); line-height: 1.5; margin: 6px 0 0; }
+  .caveat-box {
+    border: 1px solid var(--hazard-a); background: color-mix(in srgb, var(--hazard-a) 12%, var(--surface));
+    border-radius: 8px; padding: 10px 12px; font-size: 0.85rem; line-height: 1.5; margin-bottom: 12px;
+  }
+  .caveat-box .head { font-weight: 800; display: flex; align-items: center; gap: 6px; margin-bottom: 4px; color: var(--hazard-a); }
+  .eu-tag {
+    display: inline-block; font-size: 0.72rem; font-weight: 700; color: var(--accent-ink);
+    background: var(--accent); padding: 3px 8px; border-radius: 999px; margin-bottom: 10px;
+  }
+  .src-link {
+    display: inline-flex; align-items: center; gap: 6px; font-weight: 700; font-size: 0.85rem;
+    text-decoration: none; border: 1px solid var(--border-strong); border-radius: 8px; padding: 7px 12px;
+    color: var(--accent);
+  }
+  .src-link:hover { border-color: var(--accent); }
+
+  .legend {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px;
+  }
+  .legend-title { font-size: 0.95rem; font-weight: 800; margin: 0 0 12px; }
+  .legend-list { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: 10px 22px; }
+  .legend-list li { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+  .legend-swatch { width: 16px; height: 16px; border-radius: 4px; flex: none; border: 1px solid rgba(0,0,0,0.12); }
+  .legend-icon {
+    width: 20px; height: 20px; border-radius: 50%; border: 1px solid var(--border-strong);
+    display: inline-flex; align-items: center; justify-content: center; flex: none; background: var(--surface);
+  }
+  .legend-icon svg { width: 13px; height: 13px; color: var(--ink-2); }
+  .legend-note { margin-top: 12px; font-size: 0.8rem; color: var(--ink-3); }
+
+  .intlPanel {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px;
+  }
+  .intlPanel h2 { font-size: 1rem; font-weight: 800; margin: 0 0 4px; }
+  .intlIntro { font-size: 0.85rem; color: var(--ink-3); margin: 0 0 14px; max-width: 70ch; }
+  .intlGrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+  .intlCard {
+    border: 1px solid var(--border); border-radius: 8px; padding: 12px; background: var(--surface-raised);
+    cursor: pointer; text-align: left; display: flex; flex-direction: column; gap: 6px;
+  }
+  .intlCard:hover { border-color: var(--accent); }
+  .intlCard h3 { font-size: 0.9rem; margin: 0; font-weight: 800; }
+  .intlCard .tag { font-size: 0.75rem; font-weight: 700; color: var(--ink-2); display: inline-flex; align-items: center; gap: 6px; }
+  .intlCard .tag .dot { width: 9px; height: 9px; border-radius: 50%; border: 1px solid rgba(0,0,0,0.18); flex: none; }
+  .intlCard p { font-size: 0.78rem; color: var(--ink-3); margin: 0; line-height: 1.4; }
+
+  .provenance {
+    background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px;
+    font-size: 0.85rem; color: var(--ink-2);
+  }
+  #aboutBtn { font-weight: 700; }
+  #aboutPanel { margin-top: 12px; line-height: 1.6; max-width: 76ch; }
+  #aboutPanel ul { margin: 8px 0; padding-left: 20px; }
+  #aboutPanel .flagged-list button {
+    padding: 3px 9px; font-size: 0.78rem; margin-right: 6px; margin-top: 4px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; animation: none !important; }
+  }
+</style>
+
+<div class="page">
+  <div class="masthead">
+    <h1>AI Governance Atlas</h1>
+    <p class="byline">Fact-checked, independently verified status of AI-specific law and policy worldwide — built for readers with no AI or policy background.</p>
+  </div>
+
+  <div class="topbar">
+    <p class="thesis-text">
+      Where in the world does binding AI law actually exist?
+      <strong class="tone-green">Darker green</strong> means companies must follow real, enforceable rules.
+      <strong class="tone-red">Red</strong> means no AI-specific rules were found. Grey means this dataset hasn't checked that country yet.
+    </p>
+    <div class="controls">
+      <select id="jumpSelect" aria-label="Jump to a country or international body">
+        <option value="">Jump to a country…</option>
+      </select>
+      <button id="modeToggle" type="button" aria-pressed="false">
+        <span class="swatch" aria-hidden="true"></span>
+        <span id="modeToggleLabel">Show governance gaps</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="gapCaption" class="gap-caption" hidden role="status">
+    Showing where AI is used with no binding rules or enforcement behind it — striped amber marks a gap; muted grey means real binding governance already exists there.
+  </div>
+
+  <main class="mapWrap">
+    <div class="mapPane">
+      <svg id="map" viewBox="0 0 960 500" role="img" aria-label="World map colored by AI governance status. Use the dropdown above for a keyboard- and screen-reader-friendly way to browse every country.">
+        <defs>
+          <pattern id="gapHatch" width="8" height="8" patternTransform="rotate(45)" patternUnits="userSpaceOnUse">
+            <rect width="8" height="8" fill="var(--hazard-b)"></rect>
+            <rect width="4" height="8" fill="var(--hazard-a)"></rect>
+          </pattern>
+          <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="9.5"></circle>
+            <path d="M7.5 12.5l3 3 6-6.5"></path>
+          </symbol>
+          <symbol id="icon-half" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9.5"></circle>
+            <path d="M12 2.5A9.5 9.5 0 0112 21.5z" fill="currentColor" stroke="none"></path>
+          </symbol>
+          <symbol id="icon-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 20l1-4.2L15.2 5.6l3.2 3.2L8.2 19 4 20z"></path>
+            <path d="M13.6 7.2l3.2 3.2"></path>
+          </symbol>
+          <symbol id="icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 5.5h16v10H10l-4 3.5v-3.5H4z"></path>
+          </symbol>
+          <symbol id="icon-dash" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+            <circle cx="12" cy="12" r="9.5"></circle>
+            <path d="M7.5 12h9"></path>
+          </symbol>
+          <symbol id="icon-question" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="9.5"></circle>
+            <text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="800" stroke="none" fill="currentColor" font-family="Public Sans, sans-serif">?</text>
+          </symbol>
+        </defs>
+        <g id="zoomLayer">
+          <g id="countries"></g>
+          <g id="markers"></g>
+        </g>
+      </svg>
+      <div class="zoomBtns">
+        <button id="zoomIn" type="button" aria-label="Zoom in">+</button>
+        <button id="zoomOut" type="button" aria-label="Zoom out">–</button>
+        <button id="zoomReset" type="button" aria-label="Reset zoom">Reset</button>
+      </div>
+      <div class="zoomHint">Scroll/pinch to zoom · drag to pan</div>
+    </div>
+
+    <aside id="cardPanel" class="cardPanel" aria-live="polite">
+      <div id="cardEmpty" class="cardEmpty">Hover, click, or tab to a country — or use the dropdown above — to see its AI governance status.</div>
+      <div id="cardContent" class="cardContent" hidden></div>
+    </aside>
+  </main>
+
+  <section class="legend" aria-label="Map legend">
+    <h2 class="legend-title">Governance status — most to least governed</h2>
+    <ul class="legend-list" id="legendList"></ul>
+    <p class="legend-note">A grey tile with a "?" means this project hasn't assessed that country yet — most of the world's ~195 countries aren't in this dataset. That's different from "no AI-specific governance," which means it <em>was</em> checked and nothing was found.</p>
+  </section>
+
+  <section class="intlPanel" aria-labelledby="intlHeading">
+    <h2 id="intlHeading">International &amp; regional frameworks</h2>
+    <p class="intlIntro">These apply across many countries at once rather than to a single territory, so they're listed here instead of shaded on the map. The European Union is the one exception — its 27 member states are shaded on the map with EU AI Act data, since it is binding, country-specific law.</p>
+    <div class="intlGrid" id="intlGrid"></div>
+  </section>
+
+  <footer class="provenance">
+    <button id="aboutBtn" type="button" aria-expanded="false" aria-controls="aboutPanel">About this data ▾</button>
+    <div id="aboutPanel" hidden>
+      <p>Every row in this map was <strong>independently fact-checked</strong> — a first research pass, then a second, separate verification pass that looked for at least one additional independent source before anything was published. A small number of rows couldn't be fully resolved; those are flagged below rather than hidden.</p>
+      <p class="mono" id="lastVerified">Last verified: —</p>
+      <p>The underlying research and fact-check are maintained as a sourced, versioned dataset: <span class="mono">/research</span> holds the raw sourced findings (one row per country/body, with source links), and <span class="mono">/fact-check</span> holds the independent verification pass (<span class="mono">verified-sources.csv</span> and <span class="mono">disputed.md</span>) — so any claim on this map can be traced back to its original citation.</p>
+      <div class="flagged-list">
+        <strong>Rows with an open caveat:</strong>
+        <div id="flaggedButtons" style="margin-top:6px;"></div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/topojson-client/3.1.0/topojson-client.min.js"></script>
+<script src="countries-topo.js"></script>
+<script src="gov-data.js"></script>
+<script>
+(function () {
+  "use strict";
+
+  var CATEGORIES = [
+    { key: "Comprehensive binding law", order: 1, color: "#1a9850", textOn: "#0b1a10", icon: "icon-check", label: "Binding AI law in force" },
+    { key: "Sectoral or partial binding law", order: 2, color: "#91cf60", textOn: "#12220c", icon: "icon-half", label: "Some binding AI rules (partial)" },
+    { key: "Draft legislation pending", order: 3, color: "#fee08b", textOn: "#241c00", icon: "icon-pencil", label: "AI law proposed, not yet passed" },
+    { key: "Non-binding guidelines or voluntary only", order: 4, color: "#fc8d59", textOn: "#241000", icon: "icon-chat", label: "Voluntary guidelines only, no binding law" },
+    { key: "No known AI-specific governance", order: 5, color: "#d73027", textOn: "#ffffff", icon: "icon-dash", label: "No AI-specific rules found" }
+  ];
+  var CAT_BY_KEY = {};
+  CATEGORIES.forEach(function (c) { CAT_BY_KEY[c.key] = c; });
+  var NOT_ASSESSED_COLOR = "var(--not-assessed)";
+  var MUTED_KNOWN_COLOR = "var(--muted-known)";
+
+  var state = { mode: "status", activeId: null, activeIsIntl: false };
+
+  // ---------- Legend ----------
+  var legendList = document.getElementById("legendList");
+  CATEGORIES.forEach(function (c) {
+    var li = document.createElement("li");
+    li.innerHTML =
+      '<span class="legend-swatch" style="background:' + c.color + '"></span>' +
+      '<span class="legend-icon"><svg><use href="#' + c.icon + '"></use></svg></span>' +
+      "<span>" + c.label + "</span>";
+    legendList.appendChild(li);
+  });
+  var naLi = document.createElement("li");
+  naLi.innerHTML =
+    '<span class="legend-swatch" style="background:' + NOT_ASSESSED_COLOR + '"></span>' +
+    '<span class="legend-icon"><svg><use href="#icon-question"></use></svg></span>' +
+    "<span>Not yet assessed in this dataset</span>";
+  legendList.appendChild(naLi);
+
+  // ---------- International bodies panel ----------
+  var intlGrid = document.getElementById("intlGrid");
+  GOV_DATA.intlBodies.forEach(function (body, i) {
+    var cat = CAT_BY_KEY[body.category];
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "intlCard";
+    btn.id = "intl-" + i;
+    btn.innerHTML =
+      "<h3>" + body.name + "</h3>" +
+      '<span class="tag"><span class="dot" style="background:' + cat.color + '"></span>' + cat.label + "</span>" +
+      "<p>" + body.summary + "</p>";
+    btn.addEventListener("click", function () { showCard(body, true); });
+    intlGrid.appendChild(btn);
+  });
+
+  // ---------- Jump dropdown ----------
+  var jumpSelect = document.getElementById("jumpSelect");
+  var jumpEntries = [];
+  Object.keys(GOV_DATA.countries).forEach(function (id) {
+    var c = GOV_DATA.countries[id];
+    jumpEntries.push({ id: id, name: c.name, intl: false });
+  });
+  GOV_DATA.intlBodies.forEach(function (b, i) {
+    jumpEntries.push({ id: "intl-" + i, name: b.name, intl: true });
+  });
+  jumpEntries.sort(function (a, b) { return a.name.localeCompare(b.name); });
+  jumpEntries.forEach(function (e) {
+    var opt = document.createElement("option");
+    opt.value = e.id;
+    opt.textContent = e.name + (e.intl ? " (international)" : "");
+    jumpSelect.appendChild(opt);
+  });
+  jumpSelect.addEventListener("change", function () {
+    var v = jumpSelect.value;
+    if (!v) return;
+    if (v.indexOf("intl-") === 0) {
+      var idx = parseInt(v.slice(5), 10);
+      showCard(GOV_DATA.intlBodies[idx], true);
+      var el = document.getElementById(v);
+      if (el) el.scrollIntoView({ behavior: "smooth", block: "center" });
+    } else {
+      focusCountry(v);
+    }
+  });
+
+  // ---------- Card rendering ----------
+  var cardEmpty = document.getElementById("cardEmpty");
+  var cardContent = document.getElementById("cardContent");
+
+  function trimInstruments(text) {
+    if (!text) return "";
+    var parts = text.split(";").map(function (p) { return p.trim(); }).filter(Boolean);
+    return parts.map(function (p) {
+      return p.length > 130 ? p.slice(0, 129).replace(/\s+\S*$/, "") + "…" : p;
+    });
+  }
+
+  function showCard(entry, isIntl) {
+    state.activeId = isIntl ? null : entry.id;
+    state.activeIsIntl = !!isIntl;
+    cardEmpty.hidden = true;
+    cardContent.hidden = false;
+
+    var cat = CAT_BY_KEY[entry.category];
+    var instruments = trimInstruments(entry.keyInstruments);
+    var sources = entry.sources || [];
+    var primarySrc = sources[0] || "";
+
+    var html = "";
+    html += "<h3>" + entry.name + "</h3>";
+    if (isIntl) {
+      html += '<p class="card-sub">International / regional framework</p>';
+    } else if (entry.inheritedFrom) {
+      html += '<span class="eu-tag">Covered by the EU AI Act</span>';
+    }
+    html +=
+      '<span class="status-pill" style="background:' + cat.color + ';color:' + cat.textOn + '">' +
+      '<svg><use href="#' + cat.icon + '"></use></svg>' + cat.label + "</span>";
+
+    if (entry.caveat) {
+      html +=
+        '<div class="caveat-box"><div class="head"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l9 16H3z"></path><path d="M12 9.5v4.2"></path><circle cx="12" cy="17" r="0.6" fill="currentColor"></circle></svg>Flagged: unresolved detail</div>' +
+        entry.caveat + "</div>";
+    }
+
+    html += '<p class="card-summary">' + entry.summary + "</p>";
+
+    html +=
+      '<div class="card-field"><span class="k">Key law / instrument</span><span class="v">' +
+      instruments.join("; ") + "</span></div>";
+
+    html +=
+      '<div class="card-field"><span class="k">Status</span><span class="v">' +
+      entry.statusHeadline + "</span></div>";
+
+    if (entry.statusFull && entry.statusFull !== entry.statusHeadline) {
+      html +=
+        '<details class="more"><summary>More detail on status &amp; timeline</summary><p>' +
+        entry.statusFull + "</p></details>";
+    }
+
+    if (primarySrc) {
+      html +=
+        '<a class="src-link" href="' + primarySrc + '" target="_blank" rel="noopener noreferrer">View source ↗</a>';
+    }
+
+    cardContent.innerHTML = html;
+  }
+
+  function clearCard() {
+    state.activeId = null;
+    state.activeIsIntl = false;
+    cardContent.hidden = true;
+    cardEmpty.hidden = false;
+  }
+
+  function showNotAssessedCard(name) {
+    state.activeId = null;
+    cardEmpty.hidden = true;
+    cardContent.hidden = false;
+    cardContent.innerHTML =
+      "<h3>" + name + "</h3>" +
+      '<span class="status-pill" style="background:var(--not-assessed);color:var(--not-assessed-ink)">' +
+      '<svg><use href="#icon-question"></use></svg>Not yet assessed in this dataset</span>' +
+      '<p class="card-summary">This country hasn\'t been researched for this project yet — that\'s different from having checked and found no governance. It may well have AI rules that just aren\'t catalogued here.</p>';
+  }
+
+  // ---------- Map ----------
+  var svg = d3.select("#map");
+  var countriesG = d3.select("#countries");
+  var markersG = d3.select("#markers");
+  var width = 960, height = 500;
+
+  var geo = topojson.feature(WORLD_TOPO, WORLD_TOPO.objects.countries);
+  var projection = d3.geoEqualEarth().fitSize([width, height - 6], geo);
+  var pathGen = d3.geoPath(projection);
+
+  function colorFor(id, entry) {
+    if (!entry) return NOT_ASSESSED_COLOR;
+    if (state.mode === "gap") {
+      return entry.isGap ? "url(#gapHatch)" : MUTED_KNOWN_COLOR;
+    }
+    return CAT_BY_KEY[entry.category].color;
+  }
+
+  var paths = countriesG.selectAll("path")
+    .data(geo.features)
+    .enter()
+    .append("path")
+    .attr("class", "country")
+    .attr("d", pathGen)
+    .attr("data-id", function (d) { return d.id || ""; })
+    .attr("aria-hidden", "true")
+    .attr("fill", function (d) { return colorFor(d.id, GOV_DATA.countries[d.id]); });
+
+  function onActivate(d, el) {
+    var entry = GOV_DATA.countries[d.id];
+    d3.selectAll(".country, .tiny-marker").classed("is-active", false);
+    d3.select(el).classed("is-active", true);
+    if (entry) {
+      showCard(entry, false);
+    } else {
+      showNotAssessedCard((d.properties && d.properties.name) || "This territory");
+    }
+  }
+
+  // The map itself is a mouse/touch surface (hover on desktop, tap on mobile,
+  // per spec) and is marked aria-hidden — every country it shows is also
+  // reachable, with a real name and status announced, through the "Jump to a
+  // country" dropdown above, which is the documented keyboard/screen-reader
+  // path (tabbing through 70+ individual SVG shapes would be a trap, not a
+  // feature).
+  paths
+    .on("mouseenter", function (event, d) { onActivate(d, this); })
+    .on("click", function (event, d) { onActivate(d, this); });
+
+  // Tiny-country markers + caveat badges (computed from real geometry, not hardcoded)
+  geo.features.forEach(function (d) {
+    var entry = GOV_DATA.countries[d.id];
+    if (!entry) return;
+    var b = pathGen.bounds(d);
+    var w = b[1][0] - b[0][0], h = b[1][1] - b[0][1];
+    var c = pathGen.centroid(d);
+    if (!isFinite(c[0]) || !isFinite(c[1])) return;
+
+    if (w < 5 && h < 5) {
+      markersG.append("circle")
+        .datum(d)
+        .attr("class", "tiny-marker")
+        .attr("cx", c[0]).attr("cy", c[1]).attr("r", 3.2)
+        .attr("aria-hidden", "true")
+        .attr("fill", colorFor(d.id, entry))
+        .on("mouseenter click", function () { onActivate(d, this); });
+    }
+
+    if (entry.caveat) {
+      var g = markersG.append("g")
+        .attr("class", "caveat-badge")
+        .attr("transform", "translate(" + (c[0] + 5) + "," + (c[1] - 5) + ")");
+      g.append("circle").attr("r", 4.2);
+      g.append("text").attr("text-anchor", "middle").attr("dy", "2.2").text("!");
+    }
+  });
+
+  function repaint() {
+    paths.attr("fill", function (d) { return colorFor(d.id, GOV_DATA.countries[d.id]); });
+    d3.selectAll(".tiny-marker").attr("fill", function (d) { return colorFor(d.id, GOV_DATA.countries[d.id]); });
+  }
+
+  function focusCountry(id) {
+    var entry = GOV_DATA.countries[id];
+    if (!entry) return;
+    d3.selectAll(".country, .tiny-marker").classed("is-active", false);
+    var sel = countriesG.selectAll("path").filter(function (d) { return d.id === id; });
+    if (sel.empty()) sel = markersG.selectAll(".tiny-marker").filter(function (d) { return d.id === id; });
+    sel.classed("is-active", true);
+    var node = sel.node();
+    if (node && node.scrollIntoView) { node.scrollIntoView({ behavior: "smooth", block: "center", inline: "center" }); }
+    showCard(entry, false);
+  }
+
+  // ---------- Zoom ----------
+  var zoomLayer = d3.select("#zoomLayer");
+  var zoomBehavior = d3.zoom().scaleExtent([1, 8]).on("zoom", function (event) {
+    zoomLayer.attr("transform", event.transform);
+  });
+  svg.call(zoomBehavior);
+  document.getElementById("zoomIn").addEventListener("click", function () { svg.transition().duration(200).call(zoomBehavior.scaleBy, 1.6); });
+  document.getElementById("zoomOut").addEventListener("click", function () { svg.transition().duration(200).call(zoomBehavior.scaleBy, 0.625); });
+  document.getElementById("zoomReset").addEventListener("click", function () { svg.transition().duration(250).call(zoomBehavior.transform, d3.zoomIdentity); });
+
+  // ---------- Mode toggle ----------
+  var modeToggle = document.getElementById("modeToggle");
+  var gapCaption = document.getElementById("gapCaption");
+  modeToggle.addEventListener("click", function () {
+    state.mode = state.mode === "status" ? "gap" : "status";
+    var isGapMode = state.mode === "gap";
+    modeToggle.setAttribute("aria-pressed", String(isGapMode));
+    document.getElementById("modeToggleLabel").textContent = isGapMode ? "Show governance status" : "Show governance gaps";
+    gapCaption.hidden = !isGapMode;
+    repaint();
+  });
+
+  // ---------- About / provenance ----------
+  document.getElementById("lastVerified").textContent = "Last verified: " + GOV_DATA.datasetDate + " · " + GOV_DATA.totalRows + " dataset rows";
+  var aboutBtn = document.getElementById("aboutBtn");
+  var aboutPanel = document.getElementById("aboutPanel");
+  aboutBtn.addEventListener("click", function () {
+    var open = !aboutPanel.hidden;
+    aboutPanel.hidden = open;
+    aboutBtn.setAttribute("aria-expanded", String(!open));
+    aboutBtn.textContent = "About this data " + (open ? "▾" : "▴");
+  });
+  var flaggedButtons = document.getElementById("flaggedButtons");
+  Object.keys(GOV_DATA.countries).forEach(function (id) {
+    var c = GOV_DATA.countries[id];
+    if (!c.caveat) return;
+    var btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = c.name;
+    btn.addEventListener("click", function () {
+      aboutPanel.hidden = false;
+      aboutBtn.setAttribute("aria-expanded", "true");
+      focusCountry(id);
+      document.getElementById("cardPanel").scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    flaggedButtons.appendChild(btn);
+  });
+})();
+</script>
